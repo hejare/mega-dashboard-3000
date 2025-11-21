@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func NewDBClient() *sql.DB {
@@ -12,7 +14,7 @@ func NewDBClient() *sql.DB {
 		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		"user",
 		"admin",
-		"db",
+		"localhost",
 		5432,
 		"database",
 	)
