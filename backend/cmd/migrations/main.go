@@ -17,6 +17,7 @@ func main() {
 	sql := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
 			id SERIAL PRIMARY KEY,
 			name VARCHAR(100) NOT NULL,
+			change_status VARCHAR(100),
 			deleted_at TIMESTAMP
 		);`, tablename)
 
