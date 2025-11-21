@@ -5,12 +5,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hejare/mega-dashboard-3000/internal/handler"
+	"github.com/hejare/mega-dashboard-3000/internal/repository"
 	"github.com/hejare/mega-dashboard-3000/internal/service"
 )
 
 func main() {
 
-	consultantService := service.NewConsultantService()
+	consultantRepo := repository.NewConsultantRepository()
+	consultantService := service.NewConsultantService(consultantRepo)
 	consultantHandler := handler.NewConsultantHandler(consultantService)
 
 	r := gin.Default()

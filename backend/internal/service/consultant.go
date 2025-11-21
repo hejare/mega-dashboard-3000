@@ -1,9 +1,17 @@
 package service
 
-type ConsultantService struct{}
+type ConsultantRepository interface {
+	GetAllConsultants()
+}
 
-func NewConsultantService() *ConsultantService {
-	return &ConsultantService{}
+type ConsultantService struct {
+	repository ConsultantRepository
+}
+
+func NewConsultantService(repo ConsultantRepository) *ConsultantService {
+	return &ConsultantService{
+		repository: repo,
+	}
 }
 
 func (s *ConsultantService) GetAllConsultants() {}
