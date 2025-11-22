@@ -3,8 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-
-	"github.com/lib/pq"
 )
 
 type Lead struct {
@@ -72,33 +70,38 @@ func (r *LeadRepository) CreateLead(data *CreateLeadData) error {
 	return nil
 }
 
-func (r *LeadRepository) Search(query string) ([]Lead, error) {
+type LeadWithConsultantID struct {
+	Lead
+	ConsultantName string `json:"consultant_name"`
+}
+
+func (r *LeadRepository) Search(query string) ([]LeadWithConsultantID, error) {
+	processedQuery := query + "%"
+
 	sqlQuery := `
-	SELECT id, organization, role, stack, title
-			FROM leads
-			WHERE to_tsvector('simple', coalesce(role,'') || ' ' || array_to_string(stack,' '))
-			      @@ to_tsquery('simple', $1)
-			ORDER BY ts_rank(
-			    to_tsvector('simple', coalesce(role,'') || ' ' || array_to_string(stack,' ')),
-			    to_tsquery('simple', $1)
-			) DESC
-			LIMIT 50
+		SELECT leads.id, leads.organization, consultants.name
+		FROM leads
+		LEFT JOIN consultant_id_to_lead_id_mapping
+			ON leads.id = consultant_id_to_lead_id_mapping.lead_id
+		LEFT JOIN consultants
+			ON consultant_id_to_lead_id_mapping.consultant_id = consultants.id
+		WHERE organization ILIKE $1; 
 	`
 
-	fmt.Printf("query string: %s\n", query)
-
-	rows, err := r.db.Query(sqlQuery, query)
+	rows, err := r.db.Query(sqlQuery, processedQuery)
 	if err != nil {
+		fmt.Printf("Error executing query: %v\n", err)
 		return nil, err
 	}
 	defer rows.Close()
 
-	var leads []Lead
+	var leads []LeadWithConsultantID
+
 	for rows.Next() {
-		var l Lead
+		var l LeadWithConsultantID
 		var stack []string
-		if err := rows.Scan(&l.Id, &l.Organization, &l.Role, pq.Array(&stack), &l.Title); err != nil {
-			fmt.Printf("failed scanning: %v\n", err)
+		if err := rows.Scan(&l.Id, &l.Organization, &l.ConsultantName); err != nil {
+			fmt.Print("Error scanning row: ", err)
 			return nil, err
 		}
 		l.Stack = stack

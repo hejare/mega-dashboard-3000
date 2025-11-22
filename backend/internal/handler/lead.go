@@ -9,7 +9,7 @@ import (
 
 type LeadService interface {
 	CreateLead(*repository.CreateLeadData) error
-	Search(query string) ([]repository.Lead, error)
+	Search(query string) ([]repository.LeadWithConsultantID, error)
 }
 
 type LeadHandler struct {
