@@ -25,7 +25,8 @@ func main() {
 		})
 	})
 
-	r.GET("/consultant", consultantHandler.Get)
+	r.GET("/consultant", consultantHandler.GetAll)
+	r.GET("/consultant/:id", consultantHandler.GetOne)
 
 	r.Run(":8080")
 }

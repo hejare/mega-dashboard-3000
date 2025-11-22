@@ -4,6 +4,7 @@ import "github.com/hejare/mega-dashboard-3000/internal/repository"
 
 type ConsultantRepository interface {
 	GetAllConsultants() ([]repository.Consultant, error)
+	GetConsultant(id int) (*repository.Consultant, error)
 }
 
 // Consultant + all leads + assignment data (currently not all that, but that's the purpose)
@@ -21,6 +22,14 @@ func NewConsultantService(repo ConsultantRepository) *ConsultantService {
 	return &ConsultantService{
 		repository: repo,
 	}
+}
+
+func (s *ConsultantService) GetConsultant(id int) (*repository.Consultant, error) {
+	consultant, err := s.repository.GetConsultant(id)
+	if err != nil {
+		return nil, err
+	}
+	return consultant, nil
 }
 
 func (s *ConsultantService) GetAllConsultants() ([]RichConsultant, error) {
