@@ -1,41 +1,65 @@
 <script lang="ts">
-  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import TableCell from "$lib/components/table/TableCell.svelte";
+  import { ConsultStatus } from "$lib/types/dashboard";
+  import { TableRenderer } from "$lib/types/table";
+  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte"
 
-  const columns: { 
-    displayName: string
-  }[] = [{
+  type Column<T> = {
+    key: string,
+    displayName: string,
+    display?: TableRenderer
+  }
+
+  type Row = {
+    consultant: string,
+    assignment: string,
+    availability: string,
+    status: ConsultStatus,
+    extension: string,
+    leads: string[]
+  }
+
+  const columns: Column<Row>[] = [{
+    key: 'consultant',
     displayName: 'Konsult',
   }, {
-    displayName: 'Nuvarande uppdrag'
+    key: 'assignment',
+    displayName: 'Nuvarande uppdrag',
   }, {
-    displayName: 'Tillgänglig från'
+    key: 'availability',
+    displayName: 'Tillgänglig från',
   }, {
-    displayName: 'Status'
+    key: 'status',
+    displayName: 'Status',
+    display: TableRenderer.status
   }, {
-    displayName: 'Förlängning'
+    key: 'extension',
+    displayName: 'Förlängning',
   }, {
-    displayName: 'Leads'
+    key: 'leads',
+    displayName: 'Leads',
+    display: TableRenderer.array
   }];
-  const data = [{
-    konsult: 'Anna Svensson',
-    uppdrag: 'Relex',
-    tillgänglig: '2024-07-01',
-    status: 'Röd',
-    förlängning: '',
+  const data: Row[] = [{
+    consultant: 'Anna Svensson',
+    assignment: 'Relex',
+    availability: '2024-07-01',
+    status: ConsultStatus.red,
+    extension: '',
     leads: ['SVT', 'Voi']
   }, {
-    konsult: 'Erik Johansson',
-    uppdrag: 'Scrive',
-    tillgänglig: '2024-08-15',
-    status: 'Gul',
-    förlängning: 'Ja',
+    consultant: 'Erik Johansson',
+    assignment: 'Scrive',
+    availability: '2024-08-15',
+    status: ConsultStatus.yellow,
+    extension: 'Ja',
     leads: []
   }, {
-    konsult: 'Maria Karlsson',
-    uppdrag: 'Utveckling',
-    tillgänglig: '2024-09-01',
-    status: 'Röd',
-    förlängning: '',
+    consultant: 'Maria Karlsson',
+    assignment: 'Utveckling',
+    availability: '2024-09-01',
+    status: ConsultStatus.red,
+    extension: '',
     leads: ['SVT']
   }]
 </script>
@@ -55,11 +79,9 @@
         {#each data as row}
             <TableBodyRow>
                 {#each Object.entries(row) as [k, v]}
-                    <TableBodyCell>{v}</TableBodyCell>
+                    <TableBodyCell><TableCell row={v} renderer={columns.find(col => col.key === k)?.display} /></TableBodyCell>
                 {/each}
             </TableBodyRow>
         {/each}
     </TableBody>
 </Table>
-
-
