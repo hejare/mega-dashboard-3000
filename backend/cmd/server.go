@@ -17,6 +17,10 @@ func main() {
 	consultantService := service.NewConsultantService(consultantRepo)
 	consultantHandler := handler.NewConsultantHandler(consultantService)
 
+	dashboardRepo := repository.NewDashboardRepository(db)
+	dashboardService := service.NewDashboardService(dashboardRepo)
+	dashboardHandler := handler.NewDashboardHandler(dashboardService)
+
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
@@ -27,6 +31,8 @@ func main() {
 
 	r.GET("/consultant", consultantHandler.GetAll)
 	r.GET("/consultant/:id", consultantHandler.GetOne)
+
+	r.GET("/dashboard", dashboardHandler.GetDashboard)
 
 	r.Run(":8080")
 }
