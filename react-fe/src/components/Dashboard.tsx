@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createColumnHelper,
   useReactTable,
@@ -50,9 +50,13 @@ enum ModalState {
 }
 
 export function Dashboard() {
-    let { data, isLoading } = useQuery({ queryKey: ['dashboard'], queryFn: getDashboard })
+    const queryClient = useQueryClient()
+    let { data, isLoading, refetch } = useQuery({ queryKey: ['dashboard'], queryFn: getDashboard })
     const createAssignment = useMutation({
         mutationFn: createAssignMentMutation,
+        onSuccess: () => {
+            refetch();
+        }
     })
 
     const modalRef =  useRef<HTMLDialogElement>(null);
@@ -61,6 +65,7 @@ export function Dashboard() {
     const [hourlyPrice, setHourlyPrice] = useState<number>(0);
     const [periodStartAt, setPeriodStartAt] = useState<string>('');
     const [periodEndAt, setPeriodEndAt] = useState<string>('');
+    const [currentConsultantId, setCurrentConsultantId] = useState<number | null>(null);
 
     const columnHelper = createColumnHelper<DashboardData>();
 
@@ -116,6 +121,7 @@ export function Dashboard() {
                         modalRef.current.showModal();
                         setCurrentLead(lead);
                         setModalState(ModalState.lead);
+                        setCurrentConsultantId(info.row.original.consultant.id);
                     }
                 }}>{lead.organization}</button>)}</div>;
             },
@@ -187,13 +193,13 @@ export function Dashboard() {
                             <div className="modal-box">
                                 <h3 className="font-bold text-lg">Uppdragsdetaljer</h3>
                                 <label>Timpris</label>
-                                <input type="number" />
+                                <input type="number" onChange={(e) => setHourlyPrice(parseInt(e.target.value))} />
                                 <label>Period start</label>
                                 <input type="date" onChange={(e) => setPeriodStartAt(e.target.value)} />
                                 <label>Period slut</label>
                                 <input type="date" onChange={(e) => setPeriodEndAt(e.target.value)} />
                                     <button className="cursor-pointer border border-base-300 bg-base-100 px-2 py-1" onClick={() => {
-                                        if (modalRef.current) {
+                                        if (modalRef.current && currentConsultantId) {
                                             modalRef.current.close();
                                             createAssignment.mutate({
                                                 ...currentLead,
@@ -201,6 +207,7 @@ export function Dashboard() {
                                                 periodStartAt: (new Date(periodStartAt)).toISOString(),
                                                 periodEndAt: (new Date(periodEndAt)).toISOString(),
                                                 leadId: currentLead.id,
+                                                consultantId: currentConsultantId,
                                             })
                                         } 
                                     }}>Bekräfta</button>
