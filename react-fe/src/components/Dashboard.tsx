@@ -62,7 +62,19 @@ export function Dashboard() {
         }),
         columnHelper.accessor('consultant.changeStatus', {
             header: 'Status',
-            cell: info => info.getValue(),
+            cell: info => {
+                switch(info.getValue()) {
+                    case 'Ja': {
+                        return <div className="h-4 w-4 bg-yellow-500"></div>
+                    };
+                    case 'Nej': {
+                        return <div className="h-4 w-4 bg-red-500"></div>
+                    }
+                    default: {
+                        return <div className="h-4 w-4 bg-green-500"></div>
+                    }
+                }
+            },
         }),
         columnHelper.accessor('consultant.probableExtensionStatus', {
             header: 'Förlängning?',
@@ -72,10 +84,9 @@ export function Dashboard() {
             header: 'Leads',
             cell: info => {
                 const leads = info.getValue();
-                console.log('lead', leads)
-                return leads?.map(lead => (
+                return leads.map(lead => (
                     <div key={lead.id}>
-                        {lead.organization} - {lead.role}
+                        {lead.organization}
                     </div>
                 ));
             },
@@ -93,34 +104,36 @@ export function Dashboard() {
     }
 
     return (
-        <table className="table" border={1} style={{ borderCollapse: 'collapse', width: '100%' }}>
-            <thead>
-                {table.getHeaderGroups().map(headerGroup => {
-                    return (
-                    <tr key={headerGroup.id}>
-                        {headerGroup.headers.map(header => ( // map over the headerGroup headers array
-                        <th key={header.id} colSpan={header.colSpan}>
-                            {<>{header.column.columnDef.header?.valueOf()}</>}
-                        </th>
+        <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+            <table className="table">
+                <thead>
+                    {table.getHeaderGroups().map(headerGroup => {
+                        return (
+                        <tr key={headerGroup.id}>
+                            {headerGroup.headers.map(header => ( // map over the headerGroup headers array
+                            <th key={header.id} colSpan={header.colSpan}>
+                                {<>{header.column.columnDef.header?.valueOf()}</>}
+                            </th>
+                            ))}
+                        </tr>
+                        )
+                    })}
+                </thead>
+                <tbody>
+                    {table.getRowModel().rows.map(row => (
+                    <tr key={row.id}>
+                        {row.getVisibleCells().map(cell => (
+                        <td key={cell.id} style={{ padding: '4px' }}>
+                            {flexRender(
+                                cell.column.columnDef.cell,   // <- calls your custom cell renderer
+                                cell.getContext()
+                            )}
+                        </td>
                         ))}
                     </tr>
-                    )
-                })}
-            </thead>
-            <tbody>
-                {table.getRowModel().rows.map(row => (
-                <tr key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                    <td key={cell.id} style={{ padding: '4px' }}>
-                        {flexRender(
-                            cell.column.columnDef.cell,   // <- calls your custom cell renderer
-                            cell.getContext()
-                        )}
-                    </td>
                     ))}
-                </tr>
-                ))}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     )
 }
