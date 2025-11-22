@@ -62,7 +62,7 @@ export function Dashboard() {
             cell: info => {
                 const v = info.getValue()
                 if (!v) return '';
-                return v.toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                return new Date(v).toLocaleDateString('sv-SE');
             },
         }),
         columnHelper.accessor('consultant.changeStatus', {
