@@ -13,8 +13,7 @@ type DashboardService struct {
 }
 
 type RichDashboardRow struct {
-	ConsultantId    int
-	ConsultantName  string
+	Consultant      *repository.Consultant
 	ExtensionStatus string
 	ChangeStatus    string
 	Leads           []repository.Lead
@@ -46,8 +45,12 @@ func (s *DashboardService) GetDashboard() ([]RichDashboardRow, error) {
 
 		}
 		richDashboard = append(richDashboard, RichDashboardRow{
-			ConsultantId:    *&dRow.ConsultantId,
-			ConsultantName:  *&dRow.ConsultantName,
+			Consultant: &repository.Consultant{
+				Id:                      dRow.ConsultantId,
+				Name:                    dRow.ConsultantName,
+				ChangeStatus:            dRow.ChangeStatus,
+				ProbableExtensionStatus: dRow.ExtensionStatus,
+			},
 			Assignment:      assignment,
 			ExtensionStatus: *&dRow.ExtensionStatus,
 			ChangeStatus:    *&dRow.ChangeStatus,

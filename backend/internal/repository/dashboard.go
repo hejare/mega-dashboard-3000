@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -86,7 +85,6 @@ ORDER BY c.id;
 			&leadsJSON,
 		)
 		if err != nil {
-			fmt.Printf("\n\nERRROR: %v\n\n", err)
 			return nil, err
 		}
 

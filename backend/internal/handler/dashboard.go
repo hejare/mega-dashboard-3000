@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/hejare/mega-dashboard-3000/internal/service"
 )
@@ -13,15 +11,6 @@ type DashboardService interface {
 
 type DashboardHandler struct {
 	service DashboardService
-}
-
-type TmpDummyDashboardRow struct {
-	ConsultantName    string    `json:"consultantName"`
-	CurrentAssignment string    `json:"currentAssignment"`
-	AvailableFrom     time.Time `json:"availableFrom"`
-	ExtensionStatus   string    `json:"extensionStatus"`
-	ChangeStatus      string    `json:"changeStatus"`
-	Leads             []string  `json:"leads"`
 }
 
 func NewDashboardHandler(service DashboardService) *DashboardHandler {

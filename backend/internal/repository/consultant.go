@@ -7,9 +7,10 @@ type ConsultantRepository struct {
 }
 
 type Consultant struct {
-	Id           int
-	Name         string
-	ChangeStatus string
+	Id                      int
+	Name                    string
+	ChangeStatus            string
+	ProbableExtensionStatus string
 }
 
 func NewConsultantRepository(db *sql.DB) *ConsultantRepository {
