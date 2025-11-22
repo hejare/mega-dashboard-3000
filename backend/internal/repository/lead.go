@@ -13,6 +13,7 @@ type Lead struct {
 	Role         string   `json:"role"`
 	Contact      string   `json:"contact"`
 	ConsultantId int      `json:"consultantId"`
+	Organization string   `json:"organization"`
 	Title        *string  `json:"title"`
 }
 
