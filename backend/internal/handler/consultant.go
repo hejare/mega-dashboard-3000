@@ -6,11 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hejare/mega-dashboard-3000/internal/repository"
-	"github.com/hejare/mega-dashboard-3000/internal/service"
 )
 
 type ConsultantService interface {
-	GetAllConsultants() ([]service.RichConsultant, error)
+	GetAllConsultants() ([]repository.Consultant, error)
 	GetConsultant(id int) (*repository.Consultant, error)
 }
 

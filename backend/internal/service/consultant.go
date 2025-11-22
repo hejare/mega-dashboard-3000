@@ -32,18 +32,10 @@ func (s *ConsultantService) GetConsultant(id int) (*repository.Consultant, error
 	return consultant, nil
 }
 
-func (s *ConsultantService) GetAllConsultants() ([]RichConsultant, error) {
+func (s *ConsultantService) GetAllConsultants() ([]repository.Consultant, error) {
 	consultants, err := s.repository.GetAllConsultants()
 	if err != nil {
 		return nil, err
 	}
-	richConsultants := []RichConsultant{}
-	for _, c := range consultants {
-		richConsultants = append(richConsultants, RichConsultant{
-			Id:           c.Id,
-			Name:         c.Name,
-			ChangeStatus: c.ChangeStatus,
-		})
-	}
-	return richConsultants, nil
+	return consultants, nil
 }
