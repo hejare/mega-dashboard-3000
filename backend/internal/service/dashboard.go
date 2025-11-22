@@ -13,11 +13,9 @@ type DashboardService struct {
 }
 
 type RichDashboardRow struct {
-	Consultant      *repository.Consultant
-	ExtensionStatus string
-	ChangeStatus    string
-	Leads           []repository.Lead
-	Assignment      *repository.Assignment
+	Consultant *repository.Consultant `json:"consultant"`
+	Leads      []repository.Lead      `json:"leads"`
+	Assignment *repository.Assignment `json:"assignment,omitempty"`
 }
 
 func NewDashboardService(repo DashboardRepository) *DashboardService {
@@ -42,7 +40,6 @@ func (s *DashboardService) GetDashboard() ([]RichDashboardRow, error) {
 				PeriodEndAt:  *dRow.AssignmentEndDate,
 				Role:         *dRow.AssignmentRole,
 			}
-
 		}
 		richDashboard = append(richDashboard, RichDashboardRow{
 			Consultant: &repository.Consultant{
@@ -51,10 +48,8 @@ func (s *DashboardService) GetDashboard() ([]RichDashboardRow, error) {
 				ChangeStatus:            dRow.ChangeStatus,
 				ProbableExtensionStatus: dRow.ExtensionStatus,
 			},
-			Assignment:      assignment,
-			ExtensionStatus: *&dRow.ExtensionStatus,
-			ChangeStatus:    *&dRow.ChangeStatus,
-			Leads:           *&dRow.Leads,
+			Assignment: assignment,
+			Leads:      dRow.Leads,
 		})
 	}
 

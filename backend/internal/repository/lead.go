@@ -8,13 +8,12 @@ import (
 )
 
 type Lead struct {
-	Id           int
-	Organization *string
-	Stack        []string
-	Role         *string
-	Contact      *string
-	ConsultantId int
-	Title        *string
+	Id           int      `json:"id"`
+	Stack        []string `json:"stack"`
+	Role         string   `json:"role"`
+	Contact      string   `json:"contact"`
+	ConsultantId int      `json:"consultantId"`
+	Title        *string  `json:"title"`
 }
 
 type LeadRepository struct {

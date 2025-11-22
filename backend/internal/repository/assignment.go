@@ -6,16 +6,16 @@ import (
 )
 
 type Assignment struct {
-	Id            int
-	Organization  string
-	Stack         []string
-	Role          string
-	Contact       string
-	HourlyPrice   int
-	PeriodStartAt time.Time
-	PeriodEndAt   time.Time
-	Lead          *Lead
-	Consultant    *Consultant
+	Id            int         `json:"id"`
+	Organization  string      `json:"organization"`
+	Stack         []string    `json:"stack"`
+	Role          string      `json:"role"`
+	Contact       string      `json:"contact"`
+	HourlyPrice   int         `json:"hourlyPrice"`
+	PeriodStartAt time.Time   `json:"periodStartAt"`
+	PeriodEndAt   time.Time   `json:"periodEndAt"`
+	Lead          *Lead       `json:"lead"`
+	Consultant    *Consultant `json:"consultant"`
 }
 
 type CreateAssignmentData struct {
