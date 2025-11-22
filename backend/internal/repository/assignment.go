@@ -4,7 +4,7 @@ import "time"
 
 type Assignment struct {
 	Id            int
-	Company       string
+	Organization  string
 	Stack         []string
 	Role          string
 	Contact       string

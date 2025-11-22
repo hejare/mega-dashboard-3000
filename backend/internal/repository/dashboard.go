@@ -17,6 +17,7 @@ type DashboardRow struct {
 	AssignmentId           *int
 	AssignmentEndDate      *time.Time
 	AssignmentOrganization *string
+	AssignmentRole         *string
 	ExtensionStatus        string
 	ChangeStatus           string
 	Leads                  []Lead
@@ -38,12 +39,14 @@ func (r *DashboardRepository) GetDashboard() ([]DashboardRow, error) {
     a.id  AS assignment_id,
     a.period_end_at AS assignment_period_end_at,
     a.organization AS assignment_organization,
+    a.role AS assignment_role,
     COALESCE(
         json_agg(
             jsonb_build_object(
                 'Id', l.id,
                 'Organization', l.organization,
-                'Stack', array_to_json(l.stack)
+                'Stack', array_to_json(l.stack),
+                'Role', l.role
             )
         ) FILTER (WHERE l.id IS NOT NULL),
         '[]'
@@ -74,6 +77,7 @@ ORDER BY c.id;
 			&row.AssignmentId,
 			&row.AssignmentEndDate,
 			&row.AssignmentOrganization,
+			&row.AssignmentRole,
 			&leadsJSON,
 		)
 		if err != nil {

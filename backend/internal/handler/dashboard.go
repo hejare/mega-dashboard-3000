@@ -4,9 +4,12 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hejare/mega-dashboard-3000/internal/service"
 )
 
-type DashboardService interface{}
+type DashboardService interface {
+	GetDashboard() ([]service.RichDashboardRow, error)
+}
 
 type DashboardHandler struct {
 	service DashboardService
@@ -28,33 +31,10 @@ func NewDashboardHandler(service DashboardService) *DashboardHandler {
 }
 
 func (h *DashboardHandler) GetDashboard(ctx *gin.Context) {
-	mockDashboard := []TmpDummyDashboardRow{
-		{
-			ConsultantName:    "Carl Calle L",
-			CurrentAssignment: "Relex",
-			AvailableFrom:     time.Now(),
-			ChangeStatus:      "YELLOW",
-			ExtensionStatus:   "",
-			Leads:             []string{"Avalanche", "Klarna", "Spotify"},
-		},
-
-		{
-			ConsultantName:    "Calle Carl L",
-			CurrentAssignment: "Xeler",
-			AvailableFrom:     time.Now(),
-			ChangeStatus:      "RED",
-			ExtensionStatus:   "Ja",
-			Leads:             []string{"Hej", "Hejare", "Tjenare"},
-		},
-
-		{
-			ConsultantName:    "L Calle Carl",
-			CurrentAssignment: "Rexel",
-			AvailableFrom:     time.Now(),
-			ChangeStatus:      "YELLOW",
-			ExtensionStatus:   "Troligtvis",
-			Leads:             []string{"Spotify", "AAA", "BBBBBBBBBBB", "CCCCCCCC", "ADLKJFLADKJFJLKDASJF"},
-		},
+	dashboard, err := h.service.GetDashboard()
+	if err != nil {
+		ctx.JSON(500, err)
+		return
 	}
-	ctx.JSON(200, mockDashboard)
+	ctx.JSON(200, dashboard)
 }
