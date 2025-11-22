@@ -95,5 +95,4 @@ ORDER BY c.id;
 	}
 
 	return dashboard, nil
-
 }

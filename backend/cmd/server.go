@@ -23,6 +23,10 @@ func main() {
 	dashboardService := service.NewDashboardService(dashboardRepo)
 	dashboardHandler := handler.NewDashboardHandler(dashboardService)
 
+	leadRepo := repository.NewLeadRepository(db)
+	leadService := service.NewLeadService(leadRepo)
+	leadHandler := handler.NewLeadHandler(leadService)
+
 	r := gin.Default()
 
 	// Configure CORS
@@ -45,6 +49,8 @@ func main() {
 	r.GET("/consultant/:id", consultantHandler.GetOne)
 
 	r.GET("/dashboard", dashboardHandler.GetDashboard)
+
+	r.POST("/lead", leadHandler.Post)
 
 	r.Run(":8080")
 }
