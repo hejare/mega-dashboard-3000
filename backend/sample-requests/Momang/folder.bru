@@ -1,0 +1,14 @@
+meta {
+  name: Momang
+  seq: 1
+}
+
+auth {
+  mode: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{MOMANG_API_KEY}}
+  placement: header
+}
