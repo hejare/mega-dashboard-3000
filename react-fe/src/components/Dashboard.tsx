@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createColumnHelper,
   useReactTable,
   getCoreRowModel,
   flexRender,
 } from '@tanstack/react-table';
-import { getDashboard } from '../queries/queries';
-import { useState } from 'react';
+import { createAssignMentMutation, getDashboard } from '../queries/queries';
+import { useRef, useState } from 'react';
 
 interface Consultant {
     id: number;
@@ -21,7 +21,8 @@ interface Lead {
     stack: string[]
     role: string
     contact: string
-    consulatantId: number
+    consultantId: number
+    title: string
 }
 
 interface Assignment {
@@ -43,8 +44,23 @@ interface DashboardData {
     assignment: Assignment;
 }
 
+enum ModalState {
+    lead = 'LEAD',
+    createAssignment = 'CREATE_ASSIGNMENT',
+}
+
 export function Dashboard() {
     let { data, isLoading } = useQuery({ queryKey: ['dashboard'], queryFn: getDashboard })
+    const createAssignment = useMutation({
+        mutationFn: createAssignMentMutation,
+    })
+
+    const modalRef =  useRef<HTMLDialogElement>(null);
+    const [currentLead, setCurrentLead] = useState<Lead | null>(null);
+    const [modalState, setModalState] = useState<ModalState>(ModalState.lead);
+    const [hourlyPrice, setHourlyPrice] = useState<number>(0);
+    const [periodStartAt, setPeriodStartAt] = useState<string>('');
+    const [periodEndAt, setPeriodEndAt] = useState<string>('');
 
     const columnHelper = createColumnHelper<DashboardData>();
 
@@ -86,9 +102,6 @@ export function Dashboard() {
             header: 'Förlängning?',
             cell: info => {
                 const [v, setV] = useState<string>(info.getValue());
-
-
-
                 return (
                     <input value={v} onChange={e => setV(e.target.value)}/>
                 );
@@ -98,7 +111,13 @@ export function Dashboard() {
             header: 'Leads',
             cell: info => {
                 const leads = info.getValue();
-                return leads.map(lead => (lead.organization)).join(', ');
+                return <div className="flex flex-row gap-2">{leads.map(lead => <button className="cursor-pointer border border-base-300 bg-base-100 px-2 py-1" key={lead.id} onClick={() => {
+                    if (modalRef.current) {
+                        modalRef.current.showModal();
+                        setCurrentLead(lead);
+                        setModalState(ModalState.lead);
+                    }
+                }}>{lead.organization}</button>)}</div>;
             },
         }),
     ];
@@ -144,6 +163,52 @@ export function Dashboard() {
                     ))}
                 </tbody>
             </table>
+            <dialog id="my_modal_2" className="modal" ref={modalRef}>
+                {currentLead && (
+                    <>
+                        {modalState === ModalState.lead ? (
+                            <div className="modal-box">
+                                <h3 className="font-bold text-lg">Lead Detaljer</h3>
+                                <p>Organisation: {currentLead.organization}</p>
+                                <p>Roll: {currentLead.role}</p>
+                                <p>Kontakt: {currentLead.contact}</p>
+                                <p>Stack: {currentLead.stack ? currentLead.stack.join(', ') : ''}</p>
+                                    <button className="cursor-pointer border border-base-300 bg-base-100 px-2 py-1" onClick={() => {
+                                        setModalState(ModalState.lead);
+                                        if (modalRef.current) {
+                                            modalRef.current.close();
+                                        }
+                                    }}>Avbryt</button>
+                                    <button className="cursor-pointer border border-base-300 bg-base-100 px-2 py-1" onClick={() => {
+                                        setModalState(ModalState.createAssignment);
+                                    }}>Konvertera till uppdrag</button>
+                            </div>
+                        ) :  (
+                            <div className="modal-box">
+                                <h3 className="font-bold text-lg">Uppdragsdetaljer</h3>
+                                <label>Timpris</label>
+                                <input type="number" />
+                                <label>Period start</label>
+                                <input type="date" onChange={(e) => setPeriodStartAt(e.target.value)} />
+                                <label>Period slut</label>
+                                <input type="date" onChange={(e) => setPeriodEndAt(e.target.value)} />
+                                    <button className="cursor-pointer border border-base-300 bg-base-100 px-2 py-1" onClick={() => {
+                                        if (modalRef.current) {
+                                            modalRef.current.close();
+                                            createAssignment.mutate({
+                                                ...currentLead,
+                                                hourlyPrice,
+                                                periodStartAt: (new Date(periodStartAt)).toISOString(),
+                                                periodEndAt: (new Date(periodEndAt)).toISOString(),
+                                                leadId: currentLead.id,
+                                            })
+                                        } 
+                                    }}>Bekräfta</button>
+                            </div>
+                        )}
+                    </>
+                )}
+            </dialog>
         </div>
     )
 }
