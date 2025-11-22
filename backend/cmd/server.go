@@ -51,6 +51,7 @@ func main() {
 	r.GET("/dashboard", dashboardHandler.GetDashboard)
 
 	r.POST("/lead", leadHandler.Post)
+	r.POST("/lead/search", leadHandler.Search)
 
 	r.Run(":8080")
 }

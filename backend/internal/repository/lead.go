@@ -1,14 +1,20 @@
 package repository
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+
+	"github.com/lib/pq"
+)
 
 type Lead struct {
 	Id           int
-	Organization string
+	Organization *string
 	Stack        []string
-	Role         string
-	Contact      string
+	Role         *string
+	Contact      *string
 	ConsultantId int
+	Title        *string
 }
 
 type LeadRepository struct {
@@ -64,4 +70,39 @@ func (r *LeadRepository) CreateLead(data *CreateLeadData) error {
 	}
 
 	return nil
+}
+
+func (r *LeadRepository) Search(query string) ([]Lead, error) {
+	sqlQuery := `
+	SELECT id, organization, role, stack, title
+			FROM leads
+			WHERE to_tsvector('simple', coalesce(role,'') || ' ' || array_to_string(stack,' '))
+			      @@ to_tsquery('simple', $1)
+			ORDER BY ts_rank(
+			    to_tsvector('simple', coalesce(role,'') || ' ' || array_to_string(stack,' ')),
+			    to_tsquery('simple', $1)
+			) DESC
+			LIMIT 50
+	`
+
+	fmt.Printf("query string: %s\n", query)
+
+	rows, err := r.db.Query(sqlQuery, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var leads []Lead
+	for rows.Next() {
+		var l Lead
+		var stack []string
+		if err := rows.Scan(&l.Id, &l.Organization, &l.Role, pq.Array(&stack), &l.Title); err != nil {
+			fmt.Printf("failed scanning: %v\n", err)
+			return nil, err
+		}
+		l.Stack = stack
+		leads = append(leads, l)
+	}
+	return leads, nil
 }

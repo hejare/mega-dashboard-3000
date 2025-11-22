@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hejare/mega-dashboard-3000/internal/repository"
 )
 
 type LeadService interface {
 	CreateLead(*repository.CreateLeadData) error
+	Search(query string) ([]repository.Lead, error)
 }
 
 type LeadHandler struct {
@@ -31,4 +34,15 @@ func (h *LeadHandler) Post(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(200)
+}
+
+func (h *LeadHandler) Search(ctx *gin.Context) {
+	query := ctx.Query("search")
+	fmt.Printf("Performing search with query: %s\n", query)
+	leads, err := h.service.Search(query)
+	if err != nil {
+		ctx.JSON(500, err)
+		return
+	}
+	ctx.JSON(200, leads)
 }
