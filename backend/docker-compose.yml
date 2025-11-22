@@ -3,16 +3,17 @@ services:
     image: postgres:18.1
     ports:
       - 5432:5432
-
-    build:
-      context: ./server/postgres
-    
     volumes:
       - ~/db:/var/lib/postgresql/18/docker
-    
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: database
-
     restart: unless-stopped
+  migrate:
+    image: gomicro/goose:latest
+    depends_on:
+      - db
+    volumes:
+      - ./migrations:/migrations
+    command: "goose -dir /migrations postgres postgres://user:admin@db:5432/database?sslmode=disable up"
