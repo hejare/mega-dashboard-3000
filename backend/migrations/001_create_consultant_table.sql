@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS consultants
 );
 
 -- +goose Down
-DROP TABLE IF EXISTS consultants;
+DROP TABLE IF EXISTS consultants CASCADE;
