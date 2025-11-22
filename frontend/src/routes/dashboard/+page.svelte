@@ -30,6 +30,7 @@
   }, {
     key: 'availableFrom',
     displayName: 'Tillgänglig från',
+    display: TableRenderer.date
   }, {
     key: 'changeStatus',
     displayName: 'Status',
