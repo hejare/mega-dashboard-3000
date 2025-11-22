@@ -58,7 +58,11 @@ export function Dashboard() {
         }),
         columnHelper.accessor('assignment.periodEndAt', {
             header: 'Tillgänglig fr.o.m.',
-            cell: info => info.getValue(),
+            cell: info => {
+                const v = info.getValue()
+                if (!v) return '';
+                return v.toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit' })
+            },
         }),
         columnHelper.accessor('consultant.changeStatus', {
             header: 'Status',
@@ -71,7 +75,7 @@ export function Dashboard() {
                         return <div className="h-4 w-4 bg-red-500"></div>
                     }
                     default: {
-                        return <div className="h-4 w-4 bg-green-500"></div>
+                        return <></>
                     }
                 }
             },
@@ -84,11 +88,7 @@ export function Dashboard() {
             header: 'Leads',
             cell: info => {
                 const leads = info.getValue();
-                return leads.map(lead => (
-                    <div key={lead.id}>
-                        {lead.organization}
-                    </div>
-                ));
+                return leads.map(lead => (lead.organization)).join(', ');
             },
         }),
     ];
