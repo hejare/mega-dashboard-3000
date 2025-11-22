@@ -1,6 +1,6 @@
 -- +goose Up
-ALTER TABLE assignments ADD title;
-ALTER TABLE leads ADD title;
+ALTER TABLE assignments ADD title TEXT;
+ALTER TABLE leads ADD title TEXT;
 
 -- +goose Down
 ALTER TABLE assignments DROP COLUMN title;
