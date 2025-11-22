@@ -13,11 +13,11 @@ type DashboardHandler struct {
 }
 
 type TmpDummyDashboardRow struct {
-	ConsultantName    string    `json:"consultant_name"`
-	CurrentAssignment string    `json:"current_assignment"`
-	AvailableFrom     time.Time `json:"available_from"`
-	ExtensionStatus   string    `json:"extension_status"`
-	ChangeStatus      string    `json:"change_status"`
+	ConsultantName    string    `json:"consultantName"`
+	CurrentAssignment string    `json:"currentAssignment"`
+	AvailableFrom     time.Time `json:"availableFrom"`
+	ExtensionStatus   string    `json:"extensionStatus"`
+	ChangeStatus      string    `json:"changeStatus"`
 	Leads             []string  `json:"leads"`
 }
 
@@ -33,7 +33,8 @@ func (h *DashboardHandler) GetDashboard(ctx *gin.Context) {
 			ConsultantName:    "Carl Calle L",
 			CurrentAssignment: "Relex",
 			AvailableFrom:     time.Now(),
-			ChangeStatus:      "NOT_LOOKING",
+			ChangeStatus:      "YELLOW",
+			ExtensionStatus:   "",
 			Leads:             []string{"Avalanche", "Klarna", "Spotify"},
 		},
 
@@ -41,7 +42,8 @@ func (h *DashboardHandler) GetDashboard(ctx *gin.Context) {
 			ConsultantName:    "Calle Carl L",
 			CurrentAssignment: "Xeler",
 			AvailableFrom:     time.Now(),
-			ChangeStatus:      "LOOKING",
+			ChangeStatus:      "RED",
+			ExtensionStatus:   "Ja",
 			Leads:             []string{"Hej", "Hejare", "Tjenare"},
 		},
 
@@ -49,7 +51,8 @@ func (h *DashboardHandler) GetDashboard(ctx *gin.Context) {
 			ConsultantName:    "L Calle Carl",
 			CurrentAssignment: "Rexel",
 			AvailableFrom:     time.Now(),
-			ChangeStatus:      "NOT_LOOKING",
+			ChangeStatus:      "YELLOW",
+			ExtensionStatus:   "Troligtvis",
 			Leads:             []string{"Spotify", "AAA", "BBBBBBBBBBB", "CCCCCCCC", "ADLKJFLADKJFJLKDASJF"},
 		},
 	}

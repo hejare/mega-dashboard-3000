@@ -2,18 +2,18 @@
     import { TableRenderer } from "$lib/types/table";
     import ArrayRenderer from "./ArrayRenderer.svelte";
     import StatusRenderer from "./StatusRenderer.svelte";
-    export let row: any
+    export let data: any
     export let renderer: TableRenderer | undefined;
 </script>
 
 <div>
     {#if renderer === undefined}
-        {row}
+        {data}
     {:else if renderer === TableRenderer.status}
-        <StatusRenderer status={row} />
+        <StatusRenderer status={data} />
     {:else if renderer === TableRenderer.array}
-       <ArrayRenderer items={row} />
+       <ArrayRenderer items={data} />
     {:else}
-        {row}
+        {data}
     {/if}
 </div>
