@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createColumnHelper,
   useReactTable,
@@ -50,7 +50,6 @@ enum ModalState {
 }
 
 export function Dashboard() {
-    const queryClient = useQueryClient()
     let { data, isLoading, refetch } = useQuery({ queryKey: ['dashboard'], queryFn: getDashboard })
     const createAssignment = useMutation({
         mutationFn: createAssignMentMutation,
@@ -129,7 +128,11 @@ export function Dashboard() {
     ];
 
     const table = useReactTable({
-        data,
+        data: (data || []).sort((a: DashboardData, b: DashboardData) => {
+            if (!a.assignment) return -1;
+            if (!b.assignment) return 1;
+            return new Date(a.assignment.periodEndAt).getTime() - new Date(b.assignment.periodEndAt).getTime()
+        }),
         columns,
         getCoreRowModel: getCoreRowModel(),
     });
