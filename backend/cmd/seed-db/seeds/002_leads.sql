@@ -1,0 +1,17 @@
+INSERT INTO leads (id, organization) 
+VALUES (1, 'WBD'),
+(2, 'AlgoDX'),
+(3, 'Scila'),
+(4, 'Toca Boca'),
+(5, 'Bambuser'),
+(6, 'Tobii'),
+(7, 'Shopello'),
+(8, 'Corsmed'),
+(10, 'Bruce'),
+(11, 'TT'),
+(12, 'Depict'),
+(13, 'Creator'),
+(14, 'Legora'),
+(15, 'Spotify'),
+(16, 'Aira'),
+(17, 'Alf');
