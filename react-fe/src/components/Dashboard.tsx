@@ -73,7 +73,7 @@ export function Dashboard() {
             cell: info => {
                 const leads = info.getValue();
                 console.log('lead', leads)
-                return leads.map(lead => (
+                return leads?.map(lead => (
                     <div key={lead.id}>
                         {lead.organization} - {lead.role}
                     </div>
@@ -93,7 +93,7 @@ export function Dashboard() {
     }
 
     return (
-        <table border={1} style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table className="table" border={1} style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead>
                 {table.getHeaderGroups().map(headerGroup => {
                     return (
