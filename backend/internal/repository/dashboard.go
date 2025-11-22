@@ -52,9 +52,14 @@ func (r *DashboardRepository) GetDashboard() ([]DashboardRow, error) {
         '[]'
     ) AS leads
 FROM consultants c
-LEFT JOIN assignments a ON a.consultant_id = c.id AND NOW() BETWEEN a.period_start_at AND a.period_end_at
-LEFT JOIN leads l ON l.consultant_id = c.id
-GROUP BY c.id, c.name, c.change_status, c.probable_extension_status, a.id
+LEFT JOIN assignments a
+    ON a.consultant_id = c.id
+    AND NOW() BETWEEN a.period_start_at AND a.period_end_at
+LEFT JOIN consultant_id_to_lead_id_mapping m
+    ON m.consultant_id = c.id
+LEFT JOIN leads l
+    ON l.id = m.lead_id
+GROUP BY c.id, c.name, c.change_status, c.probable_extension_status, a.id, a.period_end_at, a.organization, a.role
 ORDER BY c.id;
 `
 	rows, err := r.db.Query(query)
