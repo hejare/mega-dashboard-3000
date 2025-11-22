@@ -27,6 +27,10 @@ func main() {
 	leadService := service.NewLeadService(leadRepo)
 	leadHandler := handler.NewLeadHandler(leadService)
 
+	assingmentRepo := repository.NewAssignmentRepository(db)
+	assingmentService := service.NewAssignmentService(assingmentRepo)
+	assignmentHandler := handler.NewAssignmentHandler(assingmentService)
+
 	r := gin.Default()
 
 	// Configure CORS
@@ -51,6 +55,8 @@ func main() {
 	r.GET("/dashboard", dashboardHandler.GetDashboard)
 
 	r.POST("/lead", leadHandler.Post)
+
+	r.POST("/assignment", assignmentHandler.Post)
 
 	r.Run(":8080")
 }
