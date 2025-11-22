@@ -9,6 +9,8 @@ import {
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
+import './index.css'
+
 // Create a new router instance
 const router = createRouter({ routeTree })
 
