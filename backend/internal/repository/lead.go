@@ -1,9 +1,10 @@
 package repository
 
 type Lead struct {
-	Id      int
-	Company string
-	Stack   []string
-	Role    string
-	Contact string
+	Id           int
+	Organization string
+	Stack        []string
+	Role         string
+	Contact      string
+	ConsultantId int
 }

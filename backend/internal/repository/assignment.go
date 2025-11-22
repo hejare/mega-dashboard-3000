@@ -11,4 +11,6 @@ type Assignment struct {
 	HourlyPrice   int
 	PeriodStartAt time.Time
 	PeriodEndAt   time.Time
+	Lead          *Lead
+	Consultant    *Consultant
 }
