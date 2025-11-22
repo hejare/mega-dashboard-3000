@@ -13,11 +13,12 @@ type DashboardHandler struct {
 }
 
 type TmpDummyDashboardRow struct {
-	ConsultantName    string
-	CurrentAssignment string
-	AvailableFrom     time.Time
-	ChangeStatus      string
-	Leads             []string
+	ConsultantName    string    `json:"consultant_name"`
+	CurrentAssignment string    `json:"current_assignment"`
+	AvailableFrom     time.Time `json:"available_from"`
+	ExtensionStatus   string    `json:"extension_status"`
+	ChangeStatus      string    `json:"change_status"`
+	Leads             []string  `json:"leads"`
 }
 
 func NewDashboardHandler(service DashboardService) *DashboardHandler {
