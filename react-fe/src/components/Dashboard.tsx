@@ -6,6 +6,7 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { getDashboard } from '../queries/queries';
+import { useState } from 'react';
 
 interface Consultant {
     id: number;
@@ -67,12 +68,13 @@ export function Dashboard() {
         columnHelper.accessor('consultant.changeStatus', {
             header: 'Status',
             cell: info => {
-                switch(info.getValue()) {
+                const [v, setV] = useState<string>(info.getValue());
+                switch(v) {
                     case 'Ja': {
-                        return <div className="h-4 w-4 bg-yellow-500"></div>
+                        return <div className="h-4 w-4 bg-yellow-500 cursor-pointer" onClick={() => setV('Nej')}></div>
                     };
                     case 'Nej': {
-                        return <div className="h-4 w-4 bg-red-500"></div>
+                        return <div className="h-4 w-4 bg-red-500 cursor-pointer" onClick={() => setV('Ja')}></div>
                     }
                     default: {
                         return <></>
@@ -82,7 +84,15 @@ export function Dashboard() {
         }),
         columnHelper.accessor('consultant.probableExtensionStatus', {
             header: 'Förlängning?',
-            cell: info => info.getValue(),
+            cell: info => {
+                const [v, setV] = useState<string>(info.getValue());
+
+
+
+                return (
+                    <input value={v} onChange={e => setV(e.target.value)}/>
+                );
+            },
         }),
         columnHelper.accessor('leads', {
             header: 'Leads',
@@ -110,7 +120,7 @@ export function Dashboard() {
                     {table.getHeaderGroups().map(headerGroup => {
                         return (
                         <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => ( // map over the headerGroup headers array
+                            {headerGroup.headers.map(header => (
                             <th key={header.id} colSpan={header.colSpan}>
                                 {<>{header.column.columnDef.header?.valueOf()}</>}
                             </th>
@@ -125,7 +135,7 @@ export function Dashboard() {
                         {row.getVisibleCells().map(cell => (
                         <td key={cell.id} style={{ padding: '4px' }}>
                             {flexRender(
-                                cell.column.columnDef.cell,   // <- calls your custom cell renderer
+                                cell.column.columnDef.cell,
                                 cell.getContext()
                             )}
                         </td>
